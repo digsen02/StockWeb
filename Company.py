@@ -31,39 +31,7 @@ class Company :
     def set_current_price(self, current_price):
         self.current_price = current_price
 
-    def add_order_sell(self, id, quantity, price):
-        """매도 주문"""
-
-        self.order_book_sell.append({
-            "id": id,
-            "order_id": f"{id}_{quantity}_{price}_{datetime.now()}",
-            "quantity": quantity,
-            "price": price,
-            "time": datetime.now()
-        })
-        # 시간 내림차순, 가격 내림차순
-        # 팔려는 가격이 낮으면 낮을수록 먼저 거래함.
-        self.order_book_sell.sort(key=lambda order_book: (-order_book["time"].timestamp(), -order_book["price"], order_book["quantity"]))
-
-        return self._match_orders()
-
-    def add_order_buy(self, id, quantity, price):
-        """매수 주문"""
-
-        self.order_book_buy.append({
-            "id": id,
-            "order_id" : f"{id}_{quantity}_{price}_{datetime.now()}",
-            "quantity": quantity,
-            "price": price,
-            "time": datetime.now()
-        })
-        # 시간 내림차순, 가격 오름차순
-        # 살려는 가격이 높으면 높을수록 먼저 거래함.
-        self.order_book_buy.sort(key=lambda order_book: (-order_book["time"].timestamp(), order_book["price"], order_book["quantity"]))
-
-        return self._match_orders()
-
-    def _match_orders(self):
+    def match_orders(self):
         if not self.order_book_sell or not self.order_book_buy:
             return None
 
@@ -140,7 +108,19 @@ class Market :
         if company is None:
             raise Exception("존재하지 않는 회사입니다.")
 
-        if company.add_order_sell(id, quantity, price) :
+        company.order_book_sell.append({
+            "id": id,
+            "order_id": f"{id}_{quantity}_{price}_{datetime.now()}",
+            "quantity": quantity,
+            "price": price,
+            "time": datetime.now()
+        })
+        # 시간 내림차순, 가격 오름차순
+        # 살려는 가격이 높으면 높을수록 먼저 거래함.
+        company.order_book_sell.sort(
+            key=lambda order_book: (-order_book["time"].timestamp(), order_book["price"], order_book["quantity"]))
+
+        if company.match_orders() :
             pass #여기에 remove 넣어야함
 
     def add_order_buy(self, id, ticker, quantity, price):
@@ -153,5 +133,17 @@ class Market :
         if company is None:
             raise Exception("존재하지 않는 회사입니다.")
 
-        if company.add_order_buy(id, quantity, price) :
+        company.order_book_buy.append({
+            "id": id,
+            "order_id": f"{id}_{quantity}_{price}_{datetime.now()}",
+            "quantity": quantity,
+            "price": price,
+            "time": datetime.now()
+        })
+        # 시간 내림차순, 가격 내림차순
+        # 팔려는 가격이 낮으면 낮을수록 먼저 거래함.
+        company.order_book_buy.sort(
+            key=lambda order_book: (-order_book["time"].timestamp(), -order_book["price"], order_book["quantity"]))
+
+        if company.match_orders() :
             shareholder.portfolio.add_holding(company, quantity, price)
