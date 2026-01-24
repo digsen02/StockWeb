@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>내 마켓</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .panel {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+    .panel h2, .panel h3, .panel h4 {
+      margin: 4px 0 8px 0;
+    }
+    .company-row {
+      cursor: pointer;
+    }
+    .company-row:hover {
+      background-color: #f5f5f5;
+    }
+    .company-info-grid {
+      display: grid;
+      grid-template-columns: repeat(6, auto);
+      gap: 12px;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    .company-info-grid .label {
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>내 마켓</h1>
+
+  <div>
+    <a href="/">홈</a>
+  </div>
+
+  <div class="layout">
+    <!-- 왼쪽: 마켓/회사 목록 + 주문/호가 패널 -->
+    <div>
+      <!-- 내가 참가한 마켓 목록 -->
+      <div class="panel">
+        <h2>내가 참가한 마켓</h2>
+        <ul id="joined-markets">
+          <!-- JS로 채움 -->
+        </ul>
+      </div>
+
+      <!-- 선택한 마켓의 회사 목록 -->
+      <div class="panel">
+        <h3>상장 회사</h3>
+        <table id="company-table" border="1" cellpadding="4" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th>티커</th>
+              <th>회사명</th>
+              <th>현재가</th>
+              <th>발행가</th>
+              <th>등락</th>
+              <th>등락률(%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="6">마켓을 선택하세요.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 주문 패널 -->
+      <div class="panel" id="order-panel" style="display:none;">
+        <h3>주문</h3>
+        <form id="order-form">
+          <div>
+            <label>매수/매도</label>
+            <select name="side">
+              <option value="BUY">매수</option>
+              <option value="SELL">매도</option>
+            </select>
+          </div>
+          <div>
+            <label>수량</label>
+            <input type="number" name="quantity" min="1" required />
+          </div>
+          <div>
+            <label>가격</label>
+            <input type="number" step="0.01" name="price" required />
+          </div>
+          <button type="submit">주문 보내기</button>
+        </form>
+        <div id="order-result" style="margin-top:8px; font-size:14px;"></div>
+      </div>
+
+      <!-- 호가 패널 -->
+      <div class="panel" id="orderbook-panel" style="display:none;">
+        <h3>호가</h3>
+        <div id="orderbook-area">회사를 선택하면 호가가 표시됩니다.</div>
+      </div>
+    </div>
+
+    <!-- 중앙: 회사 차트 + 정보 -->
+    <div>
+      <div class="panel" id="chart-panel">
+        <h2>주가 차트</h2>
+        <p id="chart-placeholder-text">마켓과 회사를 선택하면 차트가 표시됩니다.</p>
+        <canvas id="price-chart" width="800" height="280" style="display:none; border:1px solid #eee;"></canvas>
+
+        <!-- 회사 기본 정보 (티커 / 회사명 / 현재가 / 발행가 / 등락 / 등락률%) -->
+        <div id="company-summary" style="margin-top:12px; display:none;">
+          <div class="company-info-grid">
+            <div>
+              <div class="label">티커</div>
+              <div id="cs-ticker"></div>
+            </div>
+            <div>
+              <div class="label">회사명</div>
+              <div id="cs-name"></div>
+            </div>
+            <div>
+              <div class="label">현재가</div>
+              <div id="cs-current"></div>
+            </div>
+            <div>
+              <div class="label">발행가</div>
+              <div id="cs-issued"></div>
+            </div>
+            <div>
+              <div class="label">등락</div>
+              <div id="cs-change"></div>
+            </div>
+            <div>
+              <div class="label">등락률(%)</div>
+              <div id="cs-change-rate"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 회사 상세 추가 정보가 필요하면 여기 더 패널 추가 가능 -->
+    </div>
+  </div>
+
+  <script src="/static/js/my_markets.js"></script>
+</body>
+</html>

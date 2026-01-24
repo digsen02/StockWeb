@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html class="dark" lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>내 포트폴리오 - TradeWise</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#137fec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            display: ["Inter"],
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px",
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+  <div class="flex min-h-screen flex-col">
+    <header class="flex items-center justify-between border-b border-gray-200/10 dark:border-white/10 px-6 py-3">
+      <a href="/" class="flex items-center gap-2">
+        <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z"></path>
+          <path d="M2 17L12 22L22 17L12 12L2 17Z"></path>
+          <path d="M2 12L12 17L22 12L12 7L2 12Z"></path>
+        </svg>
+        <span class="text-xl font-bold text-gray-900 dark:text-white">TradeWise</span>
+      </a>
+      <nav class="flex items-center gap-4 text-sm">
+        <a href="/markets/me/page" class="text-gray-600 dark:text-gray-300 hover:text-primary">내 마켓</a>
+        <a href="/" class="text-gray-600 dark:text-gray-300 hover:text-primary">홈</a>
+      </nav>
+    </header>
+
+    <main class="flex-1 p-6">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">내 포트폴리오</h1>
+
+      <div
+        id="portfolio-area"
+        class="rounded-lg bg-background-light/80 dark:bg-background-dark/80 p-4 text-sm shadow-sm ring-1 ring-gray-200/70 dark:ring-gray-700/70"
+      >
+        로딩 중...
+      </div>
+    </main>
+  </div>
+
+  <script src="/static/js/portfolio.js"></script>
+</body>
+</html>

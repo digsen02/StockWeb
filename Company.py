@@ -33,15 +33,17 @@ class Company :
 
     def match_orders(self):
         if not self.order_book_sell or not self.order_book_buy:
-            return None
+            return False
 
         buy_order = self.order_book_buy[0]
         sell_order = self.order_book_sell[0]
 
         if buy_order["price"] == sell_order["price"] and buy_order["quantity"] == sell_order["quantity"]:
             self.current_price = sell_order["price"]
+
             self.order_book_buy.pop(0)
             self.order_book_sell.pop(0)
+            self.match_orders()
             return True
         return False
 
@@ -52,7 +54,7 @@ class Company :
         self.order_book_buy.pop(order_id)
 
     def show_order(self, is_sell = False):
-        for order_book in (self.order_book_sell if is_sell else  self.order_book_buy):
+        for order_book in (self.order_book_sell if is_sell else self.order_book_buy):
             print(order_book)
 
 class FinancialStatements : #재무제표
@@ -110,18 +112,22 @@ class Market :
 
         company.order_book_sell.append({
             "id": id,
-            "order_id": f"{id}_{quantity}_{price}_{datetime.now()}",
+            "order_id": f"{id}_01_{quantity}_{price}_{datetime.now()}",
             "quantity": quantity,
             "price": price,
-            "time": datetime.now()
+            "created_at": datetime.now()
         })
-        # 시간 내림차순, 가격 오름차순
+        # 시간 내림차순, 가격 오름차순, 수량 오름차순
         # 살려는 가격이 높으면 높을수록 먼저 거래함.
         company.order_book_sell.sort(
-            key=lambda order_book: (-order_book["time"].timestamp(), order_book["price"], order_book["quantity"]))
+            key=lambda order_book: (order_book["price"], order_book["quantity"], order_book["created_at"].timestamp())
+            #key=lambda buys: (-buys.price, -buys.quantity, buys.created_at.timestamp())
+        )
 
         if company.match_orders() :
-            pass #여기에 remove 넣어야함
+            shareholder.portfolio.remove_holding()
+
+            shareholder.portfolio.remove_holding(company, quantity, price)
 
     def add_order_buy(self, id, ticker, quantity, price):
         """매수 주문"""
@@ -135,15 +141,16 @@ class Market :
 
         company.order_book_buy.append({
             "id": id,
-            "order_id": f"{id}_{quantity}_{price}_{datetime.now()}",
+            "order_id": f"{id}_02_{quantity}_{price}_{datetime.now()}",
             "quantity": quantity,
             "price": price,
-            "time": datetime.now()
+            "created_at": datetime.now()
         })
         # 시간 내림차순, 가격 내림차순
         # 팔려는 가격이 낮으면 낮을수록 먼저 거래함.
         company.order_book_buy.sort(
-            key=lambda order_book: (-order_book["time"].timestamp(), -order_book["price"], order_book["quantity"]))
+            key=lambda order_book: (-order_book["price"], order_book["quantity"], order_book["created_at"].timestamp())
+        )
 
         if company.match_orders() :
             shareholder.portfolio.add_holding(company, quantity, price)

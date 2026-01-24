@@ -1,7 +1,4 @@
-from datetime import datetime
 from Company import Company, Market
-import json
-
 
 class Shareholder:
     def __init__(self, id):
@@ -30,7 +27,9 @@ class Shareholder:
 
     def sell_stock(self, market: Market, quantity: int, price=None, ticker=None, name=None):
         def sell(_price):
-            if self.portfolio.holdings[company.get_ticker()].get("shares") < quantity:
+            print(self.portfolio.holdings)
+
+            if self.portfolio.holdings[company.get_ticker()]["shares"] < quantity:
                 print("Sell stock failed : short of shares")
             else:
                 self.portfolio.add_holding(company, quantity)  # 바꿔야함
@@ -95,8 +94,7 @@ class Portfolio:
                         "avg_price": new_avg_price,  # 매수 평균 단가
                         "current_price": company.current_price,  # 현재 가격
                         "market_value": (holding["shares"] + quantity) * company.current_price,  # 평가 금액
-                        "unrealized_pnl": (company.current_price - new_avg_price) * (holding["shares"] + quantity),
-                        # 평가 손익
+                        "unrealized_pnl": (company.current_price - new_avg_price) * (holding["shares"] + quantity), # 평가 손익
                         "weight": 0  # 비중
                     }
             else:
@@ -117,14 +115,28 @@ class Portfolio:
             add(price)
 
     def remove_holding(self, company: Company, quantity, price=None):
-        def remove(_price):
-            if company.get_ticker() in self.holdings:
-                holding = self.holdings[company.get_ticker()]
-            else:
-                raise Exception("you don't have this holding")
+        if company.get_ticker() not in self.holdings:
+            raise Exception("you don't have this holding")
+
+        holding = self.holdings[company.get_ticker()]
+
+        if holding["shares"] < quantity:
+            raise Exception("not enough shares to sell")
+
+        remaining_shares = holding["shares"] - quantity
+
+        if remaining_shares > 0:
+            self.holdings[company.get_ticker()] = {
+                "name": company.name,
+                "shares": remaining_shares,
+                "avg_price": holding["avg_price"],
+                "current_price": company.current_price,
+                "market_value": remaining_shares * company.current_price,
+                "unrealized_pnl": (company.current_price - holding["avg_price"]) * remaining_shares,
+                "weight": 0
+            }
+        else:
+            self.holdings.pop(company.get_ticker())
 
     def __str__(self):
         return str(self.holdings)
-
-
-
