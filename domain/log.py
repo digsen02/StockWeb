@@ -2,6 +2,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
+from typing import Optional
 
 from domain.common import new_id
 
@@ -14,6 +15,6 @@ class Log:
 @dataclass
 class MatchLog(Log):
     buy_order_id: str
-    sell_order_id: str
+    sell_order_id: Optional[str]
     price: Decimal
     quantity: int

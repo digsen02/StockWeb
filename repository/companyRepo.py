@@ -15,16 +15,16 @@ class CompanyRepo(Repository[Company], ABC) :
     @abstractmethod
     def update(self, company: Company) -> None: ...
 
+
 class DbCompanyRepo(CompanyRepo, DbRepository[Company]):
     def add(self, company: Company) -> None:
         sql = """
         INSERT INTO companies (
             id, market_id, name, ticker,
             issued_shares, issued_price,
-            current_price, logo_src, par_value, created_at, age,
-            remaining_shares
+            current_price, logo_src, par_value, created_at, age
         )
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         """
         with self._get_conn() as conn:
             with conn.cursor() as cur:
@@ -42,7 +42,6 @@ class DbCompanyRepo(CompanyRepo, DbRepository[Company]):
                         company.par_value,
                         company.created_at,
                         company.age,
-                        company.remaining_shares,
                     ),
                 )
 
@@ -50,13 +49,11 @@ class DbCompanyRepo(CompanyRepo, DbRepository[Company]):
         for _company in companies:
             self.add(_company)
 
-
     def get_by_id(self, company_id: str) -> Optional[Company]:
         sql = """
         SELECT id, market_id, name, ticker,
                issued_shares, issued_price,
-               current_price, logo_src, par_value, age,
-               remaining_shares
+               current_price, logo_src, par_value, age
         FROM companies WHERE id = %s
         """
         with self._get_conn() as conn:
@@ -76,15 +73,13 @@ class DbCompanyRepo(CompanyRepo, DbRepository[Company]):
             ticker=row["ticker"],
             par_value=row["par_value"],
             current_price=row["current_price"],
-            remaining_shares=row["remaining_shares"],
         )
 
     def get_by_ticker(self, ticker: str) -> Optional[Company]:
         sql = """
         SELECT id, market_id, name, ticker,
                issued_shares, issued_price,
-               current_price, logo_src, par_value, age,
-               remaining_shares
+               current_price, logo_src, par_value, age
         FROM companies WHERE ticker = %s
         """
         with self._get_conn() as conn:
@@ -104,15 +99,13 @@ class DbCompanyRepo(CompanyRepo, DbRepository[Company]):
             ticker=row["ticker"],
             par_value=row["par_value"],
             current_price=row["current_price"],
-            remaining_shares=row["remaining_shares"],
         )
 
     def list_all(self) -> List[Company]:
         sql = """
         SELECT id, market_id, name, ticker,
                issued_shares, issued_price,
-               current_price, logo_src, par_value, age,
-               remaining_shares
+               current_price, logo_src, par_value, age
         FROM companies
         """
         with self._get_conn() as conn:
@@ -131,7 +124,6 @@ class DbCompanyRepo(CompanyRepo, DbRepository[Company]):
                 ticker=row["ticker"],
                 par_value=row["par_value"],
                 current_price=row["current_price"],
-                remaining_shares=row["remaining_shares"],
             )
             for row in rows
         ]
@@ -140,8 +132,7 @@ class DbCompanyRepo(CompanyRepo, DbRepository[Company]):
         sql = """
         SELECT id, market_id, name, ticker,
                issued_shares, issued_price,
-               current_price, logo_src, par_value, age,
-               remaining_shares
+               current_price, logo_src, par_value, age
         FROM companies
         WHERE market_id = %s
         """
@@ -161,7 +152,6 @@ class DbCompanyRepo(CompanyRepo, DbRepository[Company]):
                 ticker=row["ticker"],
                 par_value=row["par_value"],
                 current_price=row["current_price"],
-                remaining_shares=row["remaining_shares"],
             )
             for row in rows
         ]
@@ -183,8 +173,7 @@ class DbCompanyRepo(CompanyRepo, DbRepository[Company]):
             current_price = %s,
             logo_src = %s,
             par_value = %s,
-            age = %s,
-            remaining_shares = %s
+            age = %s
         WHERE id = %s
         """
         with self._get_conn() as conn:
@@ -201,7 +190,6 @@ class DbCompanyRepo(CompanyRepo, DbRepository[Company]):
                         company.logo_src,
                         company.par_value,
                         company.age,
-                        company.remaining_shares,
                         company.id,
                     ),
                 )

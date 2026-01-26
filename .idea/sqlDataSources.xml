@@ -3,6 +3,14 @@
   <component name="DdlMappings">
     <mapping uuid="0620ad64-94ad-4eb5-aec1-1a65e18b341b" name="@localhost Mapping">
       <data-sources db="4f4dc51f-8732-4219-872e-fe65defa13bb" />
+      <scope>
+        <node negative="1">
+          <node kind="schema" qname="stock_web" />
+          <node kind="database" qname="@">
+            <node kind="schema" negative="1" />
+          </node>
+        </node>
+      </scope>
     </mapping>
   </component>
 </project>

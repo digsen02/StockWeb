@@ -6,6 +6,7 @@ from typing import Optional
 from domain.order import OrderBook
 from domain.common import new_id
 
+
 @dataclass
 class Company:
     market_id: str  # FK
@@ -14,7 +15,6 @@ class Company:
     age: int
     issued_shares: int              # 발행 주식 수
     issued_price: Decimal           # 발행가
-    remaining_shares: int           # 회사가 들고 있는 남은 주식 수 (트레저리 주식)
     logo_src: Optional[str] = None
     ticker: Optional[str] = None
     par_value: Optional[Decimal] = None  # 액면가
@@ -38,9 +38,6 @@ class Company:
 
         if self.current_price is None:
             self.current_price = self.issued_price
-
-        if self.remaining_shares is None:
-            self.remaining_shares = self.issued_shares
 
     def get_ticker(self) -> str:
         return self.ticker

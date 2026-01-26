@@ -19,7 +19,7 @@ class OrderStatus(str, Enum):
 
 @dataclass
 class Order:
-    shareholder_id: str # FK
+    shareholder_id: Optional[str] # FK
     company_id: str # FK
 
     side: Side
@@ -83,4 +83,3 @@ class OrderBook:
             self.buys.sort(
                 key=lambda o: (-o.price, o.created_at.timestamp(), -o.quantity)
             )
-print(OrderStatus.OPEN)

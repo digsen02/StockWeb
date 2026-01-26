@@ -278,19 +278,36 @@ def create_company(market_id: str):
             "issuedShares": company.issued_shares,
             "issuedPrice": str(company.issued_price),
             "currentPrice": str(company.current_price),
-            "remainingShares": company.remaining_shares,
             "logoSrc": company.logo_src,
             "parValue": str(company.par_value) if company.par_value is not None else None,
         }
     }), 201
 
-
 @manage_bp.route("/markets/<market_id>/companies/<company_id>", methods=["GET"])
 @jwt_required()
 def company_detail(market_id: str, company_id: str):
     company = company_repo.get_by_id(company_id)
-    if not company or company.market_id != market_id:
-        return jsonify({"message": "회사를 찾을 수 없습니다."}), 404
+
+    if not company:
+        return jsonify({
+            "message": "회사를 찾을 수 없습니다.",
+            "debug": {
+                "reason": "company_not_found",
+                "market_id_in_url": market_id,
+                "company_id_in_url": company_id,
+            }
+        }), 404
+
+    if company.market_id != market_id:
+        return jsonify({
+            "message": "회사를 찾을 수 없습니다.",
+            "debug": {
+                "reason": "market_id_mismatch",
+                "market_id_in_url": market_id,
+                "market_id_in_company": company.market_id,
+                "company_id_in_url": company_id,
+            }
+        }), 404
 
     change = company.current_price - company.issued_price
     change_rate = (change / company.issued_price * 100) if company.issued_price != 0 else Decimal("0")

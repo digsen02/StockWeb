@@ -36,7 +36,7 @@ class DbRepository(Repository[T], ABC):
 
     def __init__(self,
                  host: str = os.getenv("HOST"),
-                 port: int = os.getenv("PORT"),
+                 port: int = int(os.getenv("PORT")),
                  user: str = os.getenv("USER"),
                  password: str = os.getenv("PASSWORD"),
                  db: str = os.getenv("DB")):
