@@ -40,11 +40,11 @@ class DbRepository(Repository[T], ABC):
                  user: str | None = None,
                  password: str | None = None,
                  db: str | None = None):
-        host = host if host is not None else os.getenv("HOST")
-        _port = port if port is not None else os.getenv("PORT", "3306")
-        user = user if user is not None else os.getenv("USER")
-        password = password if password is not None else os.getenv("PASSWORD")
-        db = db if db is not None else os.getenv("DB")
+        host = host if host is not None else os.getenv("MYSQLHOST")
+        _port = port if port is not None else os.getenv("MYSQLPORT")
+        user = user if user is not None else os.getenv("MYSQLUSER")
+        password = password if password is not None else os.getenv("MYSQLPASSWORD")
+        db = db if db is not None else os.getenv("MYSQLDATABASE")
         self._conn_params = {
             "host": host,
             "port": int(_port),
