@@ -15,9 +15,9 @@ def create_app():
     app = Flask(__name__, template_folder="./static")
 
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "dev-secret-key")
-    app.config["JWT_TOKEN_LOCATION"] = os.getenv("JWT_TOKEN_LOCATION")
+    app.config["JWT_TOKEN_LOCATION"] = ["headers"]
     app.config["JWT_HEADER_TYPE"] = os.getenv("JWT_HEADER_TYPE", "Bearer")
-    app.config["JWT_COOKIE_CSRF_PROTECT"] = bool(os.getenv("JWT_COOKIE_CSRF_PROTECT"))
+    app.config["JWT_COOKIE_CSRF_PROTECT"] = False
     app.config["JWT_IDENTITY_CLAIM"] = os.getenv("JWT_IDENTITY_CLAIM", "identity")
 
     JWTManager(app)
